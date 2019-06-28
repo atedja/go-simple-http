@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -12,10 +13,20 @@ var Port string
 var Timeout time.Duration
 
 func init() {
-	viper.SetDefault("APP_PORT", 3000)
-	viper.SetDefault("APP_TIMEOUT", 10)
-	viper.AutomaticEnv()
+	// Read config defaults.
+	viper.SetConfigFile("config/defaults.yml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic("Unable to read config file")
+	}
 
-	Port = fmt.Sprintf(":%d", viper.GetInt("APP_PORT"))
-	Timeout = time.Duration(viper.GetInt("APP_TIMEOUT")) * time.Second
+	// Viper is using dots (.) as separators.
+	// So, we convert them to underscores to be compatible with env vars.
+	for _, k := range viper.AllKeys() {
+		e := strings.ToUpper(strings.Replace(k, ".", "_", -1))
+		viper.BindEnv(k, e)
+	}
+
+	Port = fmt.Sprintf(":%d", viper.GetInt("app.port"))
+	Timeout = time.Duration(viper.GetInt("app.timeout")) * time.Second
 }
