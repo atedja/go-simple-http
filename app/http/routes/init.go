@@ -6,4 +6,5 @@ import (
 
 func Initialize(r chi.Router) {
 	r.Mount("/api", routeAPI())
+	r.Mount("/hello", routeHello())
 }
