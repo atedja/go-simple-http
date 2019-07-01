@@ -9,7 +9,6 @@ import (
 
 	"github.com/atedja/go-simple-http/app/config"
 	"github.com/atedja/go-simple-http/app/http/routes"
-	"github.com/atedja/go-simple-http/app/http/templates"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -22,8 +21,6 @@ func init() {
 	r.Use(middleware.URLFormat)
 	r.Use(middleware.Timeout(config.Timeout))
 	routes.Initialize(r)
-
-	templates.Read("templates")
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, "public")
